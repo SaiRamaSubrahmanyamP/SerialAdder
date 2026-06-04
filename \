@@ -1,0 +1,50 @@
+module sipo #(parameter WIDTH = 8)(
+	input clk, reset, enable, in,
+	output reg [WIDTH:0]q);
+	always@(posedge clk)
+	begin
+		if(reset) 
+		begin
+			q <= 0;
+		end
+		else if(enable)
+			q <= {in,q[WIDTH:1]};
+		else
+			q <= q;
+	end
+endmodule
+
+
+module sipo_tb;
+parameter WIDTH = 8;
+reg clk,reset, enable, in;
+wire [WIDTH:0]q;
+
+sipo #(WIDTH) p1(clk, reset, enable, in, q);
+initial
+begin
+	clk = 1'b0;
+	reset = 1'b1;
+	enable = 1'b0;
+	#10 reset = 1'b0;
+	enable = 1'b1;
+end
+always #5 clk = ~clk;
+initial
+begin
+	in = 1'b1;
+	#10 in = 1'b0;
+	#10 in = 1'b1;
+	#10 in = 1'b1;
+	#10 in = 1'b1;
+	#10 in = 1'b0;
+	#10 in = 1'b0;
+	#10 in = 1'b0;
+	#10 in = 1'b1;
+	#10 in = 1'b0;
+	#10 in = 1'b0;
+	#10 in = 1'b0;
+end
+initial #400 $finish;
+endmodule
+
